@@ -106,40 +106,10 @@ class Computer {
 
 public class Example2_MultipleComposition {
     public static void main(String[] args) {
-        // TODO: Thực hành của bạn
-        // 1. Tạo Gaming Computer với:
-        //    - Brand: "Custom Gaming PC"
-        //    - Processor: Intel i9-13900K, 24 cores, 5.8 GHz
-        //    - Memory: 32GB DDR5, 6000 MHz
-        //    - Storage: 2000GB SSD
-        
-        
-        
-        
-        
-        // 2. Hiển thị specs
-        
-        
-        // 3. Tạo Office Computer với:
-        //    - Brand: "Dell OptiPlex"
-        //    - Processor: Intel i5-12400, 6 cores, 4.4 GHz
-        //    - Memory: 16GB DDR4, 3200 MHz
-        //    - Storage: 512GB SSD
-        
-        
-        
-        
-        
-        // 4. Hiển thị specs và so sánh performance score
-        
-        
-        
-        System.out.println("\n--- SOLUTION ---");
         solutionExample();
     }
     
     private static void solutionExample() {
-        // Gaming PC
         Computer gamingPC = new Computer("Custom Gaming PC");
         gamingPC.setProcessor(new Processor("Intel", "i9-13900K", 24, 5.8));
         gamingPC.setMemory(new Memory(32, "DDR5", 6000));
@@ -147,7 +117,6 @@ public class Example2_MultipleComposition {
         gamingPC.displaySpecs();
         System.out.println("Performance Score: " + gamingPC.calculatePerformanceScore());
         
-        // Office PC
         Computer officePC = new Computer("Dell OptiPlex");
         officePC.setProcessor(new Processor("Intel", "i5-12400", 6, 4.4));
         officePC.setMemory(new Memory(16, "DDR4", 3200));

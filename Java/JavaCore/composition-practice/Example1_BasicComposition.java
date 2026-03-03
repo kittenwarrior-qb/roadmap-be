@@ -70,44 +70,13 @@ class Person {
 
 public class Example1_BasicComposition {
     public static void main(String[] args) {
-        // TODO: Thực hành của bạn
-        // 1. Tạo một Person tên "Alice", 25 tuổi
-        
-        
-        // 2. Tạo một Job: "Software Engineer", salary 80000, company "Google"
-        
-        
-        // 3. Gán job cho Alice
-        
-        
-        // 4. Hiển thị thông tin Alice
-        
-        
-        // 5. Tạo job mới: "Senior Engineer", salary 120000, company "Microsoft"
-        
-        
-        // 6. Thay đổi job của Alice
-        
-        
-        // 7. Hiển thị lại thông tin Alice
-        
-        
-        System.out.println("\n--- SOLUTION ---");
-        solutionExample();
-    }
-    
-    // Đáp án mẫu
-    private static void solutionExample() {
         Person alice = new Person("Alice", 25);
-        
+
         Job job1 = new Job("Software Engineer", 80000, "Google");
         alice.setJob(job1);
         alice.displayInfo();
         
-        Job job2 = new Job("Senior Engineer", 120000, "Microsoft");
-        alice.setJob(job2);
-        alice.displayInfo();
-        
         System.out.println("\nAlice's current salary: $" + alice.getSalary());
     }
+    
 }

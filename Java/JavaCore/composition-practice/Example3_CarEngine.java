@@ -144,36 +144,6 @@ class Car {
 
 public class Example3_CarEngine {
     public static void main(String[] args) {
-        // TODO: Thực hành của bạn
-        // 1. Tạo Tesla Model 3 với Electric engine (283 HP) và Automatic transmission
-        
-        
-        
-        
-        // 2. Hiển thị thông tin xe
-        
-        
-        // 3. Thử drive mà chưa start (sẽ lỗi)
-        
-        
-        // 4. Start xe và drive
-        
-        
-        
-        // 5. Stop xe
-        
-        
-        // 6. Tạo Ford Mustang với Gasoline engine (450 HP) và Manual transmission
-        
-        
-        
-        
-        // 7. Start, drive, và stop Mustang
-        
-        
-        
-        
-        System.out.println("\n\n--- SOLUTION ---");
         solutionExample();
     }
     
