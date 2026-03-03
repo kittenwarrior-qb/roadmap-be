@@ -1,315 +1,515 @@
-static keyword in Java is used a lot in java programming. Java static keyword is used to create a Class level variable in java. static variables and methods are part of the class, not the instances of the class.
+# Java Keywords: static, break, continue - Tóm Tắt
 
-static keyword in java
-java static, static keyword in javaJava static keyword can be used in five cases as shown in below image.static keyword in javaWe will discuss four of them here, the fifth one was introduced in Java 8 and that has been discussed at Java 8 interface changes.
+## 1. Static Keyword
 
-Java static variable
-We can use static keyword with a class level variable. A static variable is a class variable and doesn’t belong to Object/instance of the class. Since static variables are shared across all the instances of Object, they are not thread safe. Usually, static variables are used with the final keyword for common resources or constants that can be used by all the objects. If the static variable is not private, we can access it with ClassName.variableName
+### Khái Niệm
+`static` tạo biến/method thuộc về **Class** (không thuộc về instance/object). Được chia sẻ giữa tất cả các instances.
 
-    //static variable example
-    private static int count;
-    public static String str;
-    public static final String DB_USER = "myuser";
-Java static method
-Same as static variable, static method belong to class and not to class instances. A static method can access only static variables of class and invoke only static methods of the class. Usually, static methods are utility methods that we want to expose to be used by other classes without the need of creating an instance. For example Collections class. Java Wrapper classes and utility classes contains a lot of static methods. The main() method that is the entry point of a java program itself is a static method.
+### 5 Cách Sử Dụng Static
 
-    //static method example
-    public static void setCount(int count) {
-        if(count > 0)
-        StaticExample.count = count;
-    }
+#### 1.1. Static Variable (Biến Tĩnh)
+
+**Đặc điểm:**
+- Thuộc về class, không thuộc về object
+- Được chia sẻ giữa tất cả instances
+- Truy cập: `ClassName.variableName`
+
+**Ví dụ:**
+```java
+public class Counter {
+    private static int count = 0;  // Biến static
+    public static String appName = "MyApp";
+    public static final String DB_USER = "admin";  // Hằng số
     
-    //static util method
-    public static int addInts(int i, int...js){
-        int sum=i;
-        for(int x : js) sum+=x;
-        return sum;
+    public Counter() {
+        count++;  // Tất cả objects dùng chung biến count
     }
-From Java 8 onwards, we can have static methods in interfaces too. For more details please read Java 8 interface changes.
-
-Java static block
-Java static block is the group of statements that gets executed when the class is loaded into memory by Java ClassLoader. Static block is used to initialize the static variables of the class. Mostly it’s used to create static resources when the class is loaded. We can’t access non-static variables in the static block. We can have multiple static blocks in a class, although it doesn’t make much sense. Static block code is executed only once when the class is loaded into memory.
-
-    static{
-        //can be used to initialize resources when class is loaded
-        System.out.println("StaticExample static block");
-        //can access only static variables and methods
-        str="Test";
-        setCount(2);
-    }
-Java Static Class
-We can use static keyword with nested classes. static keyword can’t be used with top-level classes. A static nested class is same as any other top-level class and is nested for only packaging convenience. Read: Java Nested Classes
-
-Let’s see all the static keyword in java usage in a sample program. StaticExample.java
-
-package com.journaldev.misc;
-
-public class StaticExample {
-
-    //static block
-    static{
-        //can be used to initialize resources when class is loaded
-        System.out.println("StaticExample static block");
-        //can access only static variables and methods
-        str="Test";
-        setCount(2);
-    }
-    
-    //multiple static blocks in same class
-    static{
-        System.out.println("StaticExample static block2");
-    }
-    
-    //static variable example
-    private static int count; //kept private to control its value through setter
-    public static String str;
-    
-    public int getCount() {
-        return count;
-    }
-
-    //static method example
-    public static void setCount(int count) {
-        if(count > 0)
-        StaticExample.count = count;
-    }
-    
-    //static util method
-    public static int addInts(int i, int...js){
-        int sum=i;
-        for(int x : js) sum+=x;
-        return sum;
-    }
-
-    //static class example - used for packaging convenience only
-    public static class MyStaticClass{
-        public int count;
-        
-    }
-
 }
-Let’s see how to use static variable, method and static class in a test program. TestStatic.java
 
-package com.journaldev.misc;
+// Sử dụng
+Counter.appName = "NewApp";  // Truy cập trực tiếp
+Counter c1 = new Counter();  // count = 1
+Counter c2 = new Counter();  // count = 2 (dùng chung)
+```
 
-public class TestStatic {
+---
 
+#### 1.2. Static Method (Phương Thức Tĩnh)
+
+**Đặc điểm:**
+- Thuộc về class, gọi mà không cần tạo object
+- Chỉ truy cập được static variables/methods
+- Không truy cập được instance variables/methods
+- Thường dùng cho utility methods
+
+**Ví dụ:**
+```java
+public class MathUtil {
+    // Static method - utility
+    public static int add(int a, int b) {
+        return a + b;
+    }
+    
+    public static int sum(int... numbers) {
+        int total = 0;
+        for (int num : numbers) {
+            total += num;
+        }
+        return total;
+    }
+}
+
+// Sử dụng - không cần tạo object
+int result = MathUtil.add(5, 3);  // 8
+int total = MathUtil.sum(1, 2, 3, 4);  // 10
+
+// main() cũng là static method
+public static void main(String[] args) {
+    // Entry point của chương trình
+}
+```
+
+---
+
+#### 1.3. Static Block (Khối Tĩnh)
+
+**Đặc điểm:**
+- Chạy 1 lần duy nhất khi class được load vào memory
+- Dùng để khởi tạo static resources
+- Chạy trước constructor
+- Có thể có nhiều static blocks (chạy theo thứ tự)
+
+**Ví dụ:**
+```java
+public class Database {
+    private static String connectionUrl;
+    private static int maxConnections;
+    
+    // Static block 1
+    static {
+        System.out.println("Loading database config...");
+        connectionUrl = "jdbc:mysql://localhost:3306/mydb";
+        maxConnections = 10;
+    }
+    
+    // Static block 2
+    static {
+        System.out.println("Database initialized!");
+    }
+    
+    public Database() {
+        System.out.println("Creating Database instance");
+    }
+}
+
+// Khi chạy:
+Database db = new Database();
+// Output:
+// Loading database config...
+// Database initialized!
+// Creating Database instance
+```
+
+---
+
+#### 1.4. Static Nested Class (Lớp Lồng Tĩnh)
+
+**Đặc điểm:**
+- Class con được khai báo static bên trong class cha
+- Không cần instance của outer class để tạo object
+- Dùng để nhóm các class liên quan (packaging convenience)
+
+**Ví dụ:**
+```java
+public class OuterClass {
+    private static String outerStaticVar = "Outer Static";
+    private String outerInstanceVar = "Outer Instance";
+    
+    // Static nested class
+    public static class StaticNestedClass {
+        public void display() {
+            System.out.println(outerStaticVar);  // OK
+            // System.out.println(outerInstanceVar);  // ERROR!
+        }
+    }
+}
+
+// Sử dụng
+OuterClass.StaticNestedClass nested = new OuterClass.StaticNestedClass();
+nested.display();  // Output: Outer Static
+```
+
+---
+
+#### 1.5. Static Import
+
+**Đặc điểm:**
+- Import static members để dùng trực tiếp (không cần tên class)
+- Giảm code nhưng có thể làm giảm tính rõ ràng
+
+**Ví dụ:**
+```java
+// File: MathConstants.java
+public class MathConstants {
+    public static final double PI = 3.14159;
+    public static final int MAX_VALUE = 1000;
+    
+    public static void printInfo() {
+        System.out.println("Math utility class");
+    }
+}
+
+// File: Calculator.java
+import static MathConstants.PI;
+import static MathConstants.MAX_VALUE;
+import static MathConstants.printInfo;
+// Hoặc import tất cả: import static MathConstants.*;
+
+public class Calculator {
     public static void main(String[] args) {
-        StaticExample.setCount(5);
-        
-        //non-private static variables can be accessed with class name
-        StaticExample.str = "abc";
-        StaticExample se = new StaticExample();
-        System.out.println(se.getCount());
-        //class and instance static variables are same
-        System.out.println(StaticExample.str +" is same as "+se.str);
-        System.out.println(StaticExample.str == se.str);
-        
-        //static nested classes are like normal top-level classes
-        StaticExample.MyStaticClass myStaticClass = new StaticExample.MyStaticClass();
-        myStaticClass.count=10;
-        
-        StaticExample.MyStaticClass myStaticClass1 = new StaticExample.MyStaticClass();
-        myStaticClass1.count=20;
-        
-        System.out.println(myStaticClass.count);
-        System.out.println(myStaticClass1.count);
+        System.out.println(PI);  // Thay vì MathConstants.PI
+        System.out.println(MAX_VALUE);  // Thay vì MathConstants.MAX_VALUE
+        printInfo();  // Thay vì MathConstants.printInfo()
+    }
+}
+```
+
+---
+
+### Ví Dụ Tổng Hợp Static
+
+```java
+public class Student {
+    // Static variable
+    private static int totalStudents = 0;
+    public static String schoolName = "ABC School";
+    
+    // Instance variable
+    private String name;
+    private int id;
+    
+    // Static block
+    static {
+        System.out.println("Student class loaded!");
+        schoolName = "ABC High School";
     }
     
+    // Constructor
+    public Student(String name) {
+        this.name = name;
+        this.id = ++totalStudents;
+    }
+    
+    // Static method
+    public static int getTotalStudents() {
+        return totalStudents;
+    }
+    
+    // Instance method
+    public void displayInfo() {
+        System.out.println("ID: " + id + ", Name: " + name);
+        System.out.println("School: " + schoolName);
+    }
 }
-The output of the above static keyword in java example program is:
 
-StaticExample static block
-StaticExample static block2
-5
-abc is same as abc
-true
-10
-20
-Notice that static block code is executed first and only once as soon as class is loaded into memory. Other outputs are self-explanatory.
-
-Java static import
-Normally we access static members using Class reference, from Java 1.5 we can use java static import to avoid class reference. Below is a simple example of Java static import.
-
-package com.journaldev.test;
-
-public class A {
-
-	public static int MAX = 1000;
-	
-	public static void foo(){
-		System.out.println("foo static method");
-	}
+// Sử dụng
+public class Main {
+    public static void main(String[] args) {
+        // Output: Student class loaded!
+        
+        System.out.println(Student.schoolName);  // ABC High School
+        
+        Student s1 = new Student("John");
+        Student s2 = new Student("Jane");
+        
+        s1.displayInfo();
+        // ID: 1, Name: John
+        // School: ABC High School
+        
+        s2.displayInfo();
+        // ID: 2, Name: Jane
+        // School: ABC High School
+        
+        System.out.println("Total: " + Student.getTotalStudents());  // 2
+    }
 }
-package com.journaldev.test;
+```
 
-import static com.journaldev.test.A.MAX;
-import static com.journaldev.test.A.foo;
+---
 
-public class B {
+## 2. Break Keyword
 
-	public static void main(String args[]){
-		System.out.println(MAX); //normally A.MAX
-		foo(); // normally A.foo()
-	}
+### Khái Niệm
+`break` dùng để **thoát khỏi** loop hoặc switch statement.
+
+### 2.1. Unlabeled Break (Break Thông Thường)
+
+**Đặc điểm:**
+- Thoát khỏi loop gần nhất (for, while, do-while, switch)
+- Dùng khi tìm thấy kết quả hoặc đạt điều kiện dừng
+
+**Ví dụ:**
+```java
+// Break trong for loop
+String[] arr = {"A", "E", "I", "O", "U"};
+for (int i = 0; i < arr.length; i++) {
+    if (arr[i].equals("O")) {
+        System.out.println("Found 'O' at index: " + i);
+        break;  // Dừng loop ngay khi tìm thấy
+    }
 }
-Notice the import statements, for static import we have to use import static followed by the fully classified static member of a class. For importing all the static members of a class, we can use * as in import static com.journaldev.test.A.*;. We should use it only when we are using the static variable of a class multiple times, it’s not good for readability. Java break
-There are two forms of break statement - unlabeled and labeled. Mostly break statement is used to terminate a loop based on some condition, for example break the processing if exit command is reached. Unlabeled break statement is used to terminate the loop containing it and can be used with switch, for, while and do-while loops.
+// Output: Found 'O' at index: 3
 
-break in java example
-Here is an example showing java break statement usage in for loop, while loop and do-while loop.
-
-package com.journaldev.util;
-
-package com.journaldev.util;
-
-public class JavaBreak {
-
-	public static void main(String[] args) {
-		String[] arr = { "A", "E", "I", "O", "U" };
-
-		// find O in the array using for loop
-		for (int len = 0; len < arr.length; len++) {
-			if (arr[len].equals("O")) {
-				System.out.println("Array contains 'O' at index: " + len);
-				// break the loop as we found what we are looking for
-				break;
-			}
-		}
-
-		// use of break in while loop
-		int len = 0;
-		while (len < arr.length) {
-			if (arr[len].equals("E")) {
-				System.out.println("Array contains 'E' at index: " + len);
-				// break the while loop as we found what we are looking for
-				break;
-			}
-			len++;
-		}
-
-		len = 0;
-		// use of break in do-while loop
-		do {
-			if (arr[len].equals("U")) {
-				System.out.println("Array contains 'U' at index: " + len);
-				// break the while loop as we found what we are looking for
-				break;
-			}
-			len++;
-		} while (len < arr.length);
-	}
-
+// Break trong while loop
+int i = 0;
+while (i < arr.length) {
+    if (arr[i].equals("E")) {
+        System.out.println("Found 'E' at index: " + i);
+        break;
+    }
+    i++;
 }
-java break statement, break in javaNote that if we remove break statement, there won’t be any difference in the output of the program. For small iterations like in this example, there is not much of a performance benefit. But if the iterator size is huge, then it can save a lot of processing time.
+// Output: Found 'E' at index: 1
 
-Java break label
-Labeled break statement is used to terminate the outer loop, the loop should be labeled for it to work. Here is an example showing java break label statement usage.
+// Break trong do-while loop
+int j = 0;
+do {
+    if (arr[j].equals("U")) {
+        System.out.println("Found 'U' at index: " + j);
+        break;
+    }
+    j++;
+} while (j < arr.length);
+// Output: Found 'U' at index: 4
+```
 
-package com.journaldev.util;
-
-public class JavaBreakLabel {
-
-	public static void main(String[] args) {
-		int[][] arr = { { 1, 2 }, { 3, 4 }, { 9, 10 }, { 11, 12 } };
-		boolean found = false;
-		int row = 0;
-		int col = 0;
-		// find index of first int greater than 10
-		searchint:
-
-		for (row = 0; row < arr.length; row++) {
-			for (col = 0; col < arr[row].length; col++) {
-				if (arr[row][col] > 10) {
-					found = true;
-					// using break label to terminate outer statements
-					break searchint;
-				}
-			}
-		}
-		if (found)
-			System.out.println("First int greater than 10 is found at index: [" + row + "," + col + "]");
-	}
-
+**Ví dụ thực tế:**
+```java
+// Tìm số nguyên tố đầu tiên > 100
+for (int num = 101; num < 200; num++) {
+    boolean isPrime = true;
+    for (int i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i == 0) {
+            isPrime = false;
+            break;  // Không cần kiểm tra thêm
+        }
+    }
+    if (isPrime) {
+        System.out.println("First prime > 100: " + num);
+        break;  // Tìm thấy rồi, dừng luôn
+    }
 }
-java break label
-Java break
-There are two forms of break statement - unlabeled and labeled. Mostly break statement is used to terminate a loop based on some condition, for example break the processing if exit command is reached. Unlabeled break statement is used to terminate the loop containing it and can be used with switch, for, while and do-while loops.
+```
 
-break in java example
-Here is an example showing java break statement usage in for loop, while loop and do-while loop.
+---
 
-package com.journaldev.util;
+### 2.2. Labeled Break (Break Có Nhãn)
 
-package com.journaldev.util;
+**Đặc điểm:**
+- Thoát khỏi loop bên ngoài (outer loop)
+- Cần đặt label (nhãn) cho loop muốn thoát
+- Hữu ích với nested loops (vòng lặp lồng nhau)
 
-public class JavaBreak {
+**Ví dụ:**
+```java
+int[][] matrix = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9},
+    {10, 11, 12}
+};
 
-	public static void main(String[] args) {
-		String[] arr = { "A", "E", "I", "O", "U" };
+boolean found = false;
+int row = 0, col = 0;
 
-		// find O in the array using for loop
-		for (int len = 0; len < arr.length; len++) {
-			if (arr[len].equals("O")) {
-				System.out.println("Array contains 'O' at index: " + len);
-				// break the loop as we found what we are looking for
-				break;
-			}
-		}
-
-		// use of break in while loop
-		int len = 0;
-		while (len < arr.length) {
-			if (arr[len].equals("E")) {
-				System.out.println("Array contains 'E' at index: " + len);
-				// break the while loop as we found what we are looking for
-				break;
-			}
-			len++;
-		}
-
-		len = 0;
-		// use of break in do-while loop
-		do {
-			if (arr[len].equals("U")) {
-				System.out.println("Array contains 'U' at index: " + len);
-				// break the while loop as we found what we are looking for
-				break;
-			}
-			len++;
-		} while (len < arr.length);
-	}
-
+// Label cho outer loop
+searchLoop:
+for (row = 0; row < matrix.length; row++) {
+    for (col = 0; col < matrix[row].length; col++) {
+        if (matrix[row][col] > 10) {
+            found = true;
+            break searchLoop;  // Thoát cả 2 loops
+        }
+    }
 }
-java break statement, break in javaNote that if we remove break statement, there won’t be any difference in the output of the program. For small iterations like in this example, there is not much of a performance benefit. But if the iterator size is huge, then it can save a lot of processing time.
 
-Java break label
-Labeled break statement is used to terminate the outer loop, the loop should be labeled for it to work. Here is an example showing java break label statement usage.
-
-package com.journaldev.util;
-
-public class JavaBreakLabel {
-
-	public static void main(String[] args) {
-		int[][] arr = { { 1, 2 }, { 3, 4 }, { 9, 10 }, { 11, 12 } };
-		boolean found = false;
-		int row = 0;
-		int col = 0;
-		// find index of first int greater than 10
-		searchint:
-
-		for (row = 0; row < arr.length; row++) {
-			for (col = 0; col < arr[row].length; col++) {
-				if (arr[row][col] > 10) {
-					found = true;
-					// using break label to terminate outer statements
-					break searchint;
-				}
-			}
-		}
-		if (found)
-			System.out.println("First int greater than 10 is found at index: [" + row + "," + col + "]");
-	}
-
+if (found) {
+    System.out.println("Found at [" + row + "," + col + "]");
 }
-java break label
+// Output: Found at [3,1]
+```
+
+**So sánh có/không có label:**
+```java
+// KHÔNG có label - chỉ thoát inner loop
+for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+        if (j == 1) break;  // Chỉ thoát inner loop
+        System.out.print(i + "," + j + " ");
+    }
+}
+// Output: 0,0 1,0 2,0
+
+// CÓ label - thoát cả outer loop
+outer:
+for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+        if (j == 1) break outer;  // Thoát cả 2 loops
+        System.out.print(i + "," + j + " ");
+    }
+}
+// Output: 0,0
+```
+
+---
+
+## 3. Continue Keyword
+
+### Khái Niệm
+`continue` dùng để **bỏ qua** iteration hiện tại và chuyển sang iteration tiếp theo.
+
+### 3.1. Unlabeled Continue
+
+**Đặc điểm:**
+- Bỏ qua phần code còn lại trong iteration hiện tại
+- Chuyển sang iteration tiếp theo của loop
+- Khác với break: continue không thoát loop
+
+**Ví dụ:**
+```java
+// In số chẵn từ 1-10
+for (int i = 1; i <= 10; i++) {
+    if (i % 2 != 0) {
+        continue;  // Bỏ qua số lẻ
+    }
+    System.out.print(i + " ");
+}
+// Output: 2 4 6 8 10
+
+// Bỏ qua phần tử null
+String[] names = {"John", null, "Jane", null, "Bob"};
+for (String name : names) {
+    if (name == null) {
+        continue;  // Bỏ qua null
+    }
+    System.out.println("Hello, " + name);
+}
+// Output:
+// Hello, John
+// Hello, Jane
+// Hello, Bob
+```
+
+**Ví dụ thực tế:**
+```java
+// Xử lý danh sách, bỏ qua invalid items
+int[] scores = {85, -1, 92, 0, 78, -5, 88};
+int total = 0;
+int count = 0;
+
+for (int score : scores) {
+    if (score < 0) {
+        System.out.println("Invalid score: " + score);
+        continue;  // Bỏ qua điểm không hợp lệ
+    }
+    total += score;
+    count++;
+}
+
+double average = (double) total / count;
+System.out.println("Average: " + average);
+// Output:
+// Invalid score: -1
+// Invalid score: -5
+// Average: 68.6
+```
+
+---
+
+### 3.2. Labeled Continue
+
+**Đặc điểm:**
+- Bỏ qua iteration hiện tại của outer loop
+- Chuyển sang iteration tiếp theo của loop được label
+
+**Ví dụ:**
+```java
+// In bảng cửu chương, bỏ qua dòng có i = 5
+outer:
+for (int i = 1; i <= 10; i++) {
+    if (i == 5) {
+        continue outer;  // Bỏ qua toàn bộ dòng i=5
+    }
+    for (int j = 1; j <= 3; j++) {
+        System.out.print(i + "x" + j + "=" + (i*j) + " ");
+    }
+    System.out.println();
+}
+// Output:
+// 1x1=1 1x2=2 1x3=3
+// 2x1=2 2x2=4 2x3=6
+// 3x1=3 3x2=6 3x3=9
+// 4x1=4 4x2=8 4x3=12
+// (dòng 5 bị bỏ qua)
+// 6x1=6 6x2=12 6x3=18
+// ...
+```
+
+---
+
+## So Sánh Break vs Continue
+
+| Tiêu chí | Break | Continue |
+|----------|-------|----------|
+| **Chức năng** | Thoát khỏi loop | Bỏ qua iteration hiện tại |
+| **Loop sau đó** | Dừng hẳn | Tiếp tục iteration tiếp theo |
+| **Khi nào dùng** | Tìm thấy kết quả, đạt điều kiện dừng | Bỏ qua invalid data, điều kiện đặc biệt |
+| **Với switch** | Có thể dùng | Không dùng |
+
+**Ví dụ so sánh:**
+```java
+System.out.println("=== BREAK ===");
+for (int i = 1; i <= 5; i++) {
+    if (i == 3) {
+        break;  // Dừng hẳn khi i=3
+    }
+    System.out.print(i + " ");
+}
+// Output: 1 2
+
+System.out.println("\n=== CONTINUE ===");
+for (int i = 1; i <= 5; i++) {
+    if (i == 3) {
+        continue;  // Bỏ qua i=3, tiếp tục với i=4,5
+    }
+    System.out.print(i + " ");
+}
+// Output: 1 2 4 5
+```
+
+---
+
+## Tổng Kết
+
+### Static Keyword
+- **Static variable:** Biến dùng chung cho tất cả objects
+- **Static method:** Method gọi mà không cần tạo object
+- **Static block:** Chạy 1 lần khi class load
+- **Static class:** Nested class độc lập
+- **Static import:** Import để dùng trực tiếp
+
+### Break Keyword
+- **Unlabeled:** Thoát loop gần nhất
+- **Labeled:** Thoát outer loop được chỉ định
+- Dùng khi: Tìm thấy kết quả, đạt điều kiện dừng
+
+### Continue Keyword
+- **Unlabeled:** Bỏ qua iteration hiện tại
+- **Labeled:** Bỏ qua iteration của outer loop
+- Dùng khi: Bỏ qua invalid data, trường hợp đặc biệt
+
+### Best Practices
+1. Dùng `static` cho utility methods và constants
+2. Dùng `break` để tối ưu performance (dừng sớm khi có thể)
+3. Dùng `continue` để code sạch hơn (tránh nested if)
+4. Tránh lạm dụng labeled break/continue (khó đọc)
