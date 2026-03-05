@@ -252,3 +252,178 @@ redisTemplate.opsForHash().put("user:1", "name", "Quoc");
 - @TimeToLive
 - CrudRepository
 - RedisTemplate (nếu custom)
+
+## XIII. Kiểm tra Redis trên Docker
+
+### 1. Vào Redis CLI trong Docker container
+
+```bash
+docker exec -it <container_name> redis-cli
+```
+
+Hoặc nếu biết container ID:
+
+```bash
+docker exec -it <container_id> redis-cli
+```
+
+### 2. Các lệnh Redis CLI cơ bản
+
+**Xem tất cả keys:**
+
+```bash
+KEYS *
+```
+
+**Xem keys theo pattern:**
+
+```bash
+KEYS users:*
+```
+
+**Xem giá trị của một key (String):**
+
+```bash
+GET key_name
+```
+
+**Xem giá trị của Hash:**
+
+```bash
+HGETALL users:1
+```
+
+**Xem tất cả fields của Hash:**
+
+```bash
+HKEYS users:1
+```
+
+**Xem một field cụ thể của Hash:**
+
+```bash
+HGET users:1 name
+```
+
+**Kiểm tra TTL (Time To Live):**
+
+```bash
+TTL users:1
+```
+
+Kết quả:
+- `-1`: Không có TTL (tồn tại vĩnh viễn)
+- `-2`: Key không tồn tại
+- `>0`: Số giây còn lại
+
+**Xoá một key:**
+
+```bash
+DEL users:1
+```
+
+**Xoá tất cả keys:**
+
+```bash
+FLUSHALL
+```
+
+**Xoá keys trong database hiện tại:**
+
+```bash
+FLUSHDB
+```
+
+**Kiểm tra type của key:**
+
+```bash
+TYPE users:1
+```
+
+**Đếm số lượng keys:**
+
+```bash
+DBSIZE
+```
+
+**Chọn database khác (0-15):**
+
+```bash
+SELECT 1
+```
+
+### 3. Ví dụ thực tế
+
+Giả sử bạn có entity:
+
+```java
+@RedisHash("users")
+public class User {
+    @Id
+    private String id;
+    private String name;
+    @Indexed
+    private String email;
+}
+```
+
+Sau khi save user với id = "1", kiểm tra trong Redis:
+
+```bash
+# Vào Redis CLI
+docker exec -it redis-container redis-cli
+
+# Xem tất cả keys
+127.0.0.1:6379> KEYS *
+1) "users:1"
+2) "users:email:test@gmail.com"
+3) "users"
+
+# Xem chi tiết user
+127.0.0.1:6379> HGETALL users:1
+1) "_class"
+2) "com.example.User"
+3) "id"
+4) "1"
+5) "name"
+6) "Quoc"
+7) "email"
+8) "test@gmail.com"
+
+# Kiểm tra TTL
+127.0.0.1:6379> TTL users:1
+(integer) -1
+
+# Thoát
+127.0.0.1:6379> exit
+```
+
+### 4. Docker Compose với Redis
+
+```yaml
+version: '3.8'
+services:
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+
+volumes:
+  redis-data:
+```
+
+Chạy:
+
+```bash
+docker-compose up -d
+```
+
+Kiểm tra:
+
+```bash
+docker exec -it redis-container redis-cli
+```
