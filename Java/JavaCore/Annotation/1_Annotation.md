@@ -161,11 +161,108 @@ Method with revision no 1 = public static void ...AnnotationExample.oldMethod()
 
 ---
 
-## 7. Tổng kết
+## 7. Lombok Annotations
+
+> **Lombok** là thư viện giúp giảm boilerplate code bằng cách tự động sinh getter, setter, constructor, builder,...
+
+### 7.1. Các Annotation phổ biến
+
+| Annotation | Mô tả |
+|-----------|-------|
+| `@Getter` | Tự động tạo getter cho tất cả field: `getId()`, `getName()`, `getVenue()`... |
+| `@Setter` | Tự động tạo setter cho tất cả field: `setId()`, `setName()`, `setVenue()`... |
+| `@NoArgsConstructor` | Tự động tạo constructor không tham số: `new Event()` |
+| `@AllArgsConstructor` | Tự động tạo constructor đủ tất cả field: `new Event(id, name, venue, ...)` |
+| `@Builder` | Tự động tạo Builder pattern để tạo object theo kiểu chain |
+
+### 7.2. Ví dụ sử dụng Lombok
+
+**Không dùng Lombok:**
+
+```java
+public class Event {
+    private Long id;
+    private String name;
+    private String venue;
+    
+    // Constructor không tham số
+    public Event() {}
+    
+    // Constructor đầy đủ
+    public Event(Long id, String name, String venue) {
+        this.id = id;
+        this.name = name;
+        this.venue = venue;
+    }
+    
+    // Getters
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public String getVenue() { return venue; }
+    
+    // Setters
+    public void setId(Long id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setVenue(String venue) { this.venue = venue; }
+}
+```
+
+**Dùng Lombok:**
+
+```java
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Event {
+    private Long id;
+    private String name;
+    private String venue;
+}
+```
+
+### 7.3. Sử dụng Builder Pattern
+
+```java
+// Tạo object bằng Builder
+Event event = Event.builder()
+    .id(1L)
+    .name("Spring Concert")
+    .venue("National Stadium")
+    .build();
+
+// Hoặc dùng constructor
+Event event2 = new Event(1L, "Spring Concert", "National Stadium");
+
+// Hoặc dùng setter
+Event event3 = new Event();
+event3.setId(1L);
+event3.setName("Spring Concert");
+event3.setVenue("National Stadium");
+```
+
+### 7.4. Các Annotation Lombok khác
+
+| Annotation | Mô tả |
+|-----------|-------|
+| `@Data` | Kết hợp `@Getter`, `@Setter`, `@ToString`, `@EqualsAndHashCode`, `@RequiredArgsConstructor` |
+| `@ToString` | Tự động tạo method `toString()` |
+| `@EqualsAndHashCode` | Tự động tạo `equals()` và `hashCode()` |
+| `@RequiredArgsConstructor` | Tạo constructor cho các field `final` hoặc `@NonNull` |
+| `@Value` | Tạo immutable class (tất cả field là `final`, chỉ có getter) |
+| `@Slf4j` | Tự động tạo logger: `private static final Logger log = ...` |
+
+---
+
+## 8. Tổng kết
 
 | Loại              | Mô tả ngắn |
 |------------------|------------|
 | Custom annotation | Dùng `@interface`, có thể có default value |
 | Meta-annotation  | Gắn lên annotation để cấu hình hành vi |
 | Built-in         | `@Override`, `@Deprecated`, `@SuppressWarnings`,... |
+| Lombok           | `@Getter`, `@Setter`, `@Builder`,... giảm boilerplate code |
 | Parsing          | Dùng **Reflection API**, cần `RetentionPolicy.RUNTIME` |
